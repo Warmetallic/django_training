@@ -23,6 +23,7 @@ class ShopIndexView(View):
         context = {
             "time_running": default_timer(),
             "products": products_list_tupl,
+            "items": 5,
         }
         return render(request, 'shopapp/shop_page.html', context=context)
     
