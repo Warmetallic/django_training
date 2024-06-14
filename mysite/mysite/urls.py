@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('request/', include('requestdataapp.urls')),
     path('views/', include('views.urls')),
+    path('api/', include('myapiapp.urls')),
 ]
 
 urlpatterns += i18n_patterns(
