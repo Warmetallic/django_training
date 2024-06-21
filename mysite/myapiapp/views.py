@@ -10,19 +10,26 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin
 
 from .serializers import GroupSerializer
 
+
 @api_view()
 def hello_world_view(request: Request) -> Response:
-	return Response({"message": "Hello World!"})
+    return Response({"message": "Hello World!"})
 
 
 class GroupsListView(ListCreateAPIView):
-	queryset = Group.objects.all()
-	serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
-	# def get(self, request: Request) -> Response:
-	# 	# groups = Group.objects.all()
-	# 	# - data = [group.name for group in groups]
-	# 	# serialized = GroupSerializer(groups, many=True)
-	# 	# return Response({"groups": serialized.data})
-	# 	return self.list(request)
 
+# class GroupsListView(APIView):
+# 	def get(self, request: Request) -> Response:
+# 		groups = Group.objects.all()
+# 		serialized = GroupSerializer(groups, many=True)
+# 		return Response({"groups": serialized.data})
+
+# class GroupsListView(ListModelMixin, GenericAPIView):
+#   queryset = Group.objects.all()
+#   serializer_class = GroupSerializer
+
+# 	def get(self, request: Request) -> Response:
+# 			return self.list(request)
