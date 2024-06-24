@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+
 
 def product_preview_directory_path(instance: "Product", filename: str) -> str:
     return "products/product_{pk}/preview/{filename}".format(
@@ -7,9 +8,19 @@ def product_preview_directory_path(instance: "Product", filename: str) -> str:
         filename=filename,
     )
 
+
 class Product(models.Model):
+    """
+    Модель Product представляют товар,
+    который можно продавать в интеренет-магазине
+
+    Заказы: :model:`shopapp.Order`
+
+
+    """
+
     class Meta:
-        ordering = ["name", "price"] #сортировка по имени и цене
+        ordering = ["name", "price"]  # сортировка по имени и цене
         # ordering = ["-name", "price"] обратная сортировка
         # db_table = "tech_product"
         # verbose_name_plural = "products"
@@ -28,21 +39,24 @@ class Product(models.Model):
     #         return self.description
     #     return self.description[:48] + "..."
 
-
     def __str__(self) -> str:
         return f"Product(pk={self.pk}, name={self.name!r})"
-    
+
 
 def product_images_directory_path(instance: "ProductImage", filename: str) -> str:
     return "products/product_{pk}/images/{filename}".format(
         pk=instance.product.pk,
         filename=filename,
     )
-    
+
+
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="images"
+    )
     image = models.ImageField(null=True, upload_to=product_images_directory_path)
     description = models.CharField(max_length=200, blank=True)
+
 
 class Order(models.Model):
     delivery_address = models.TextField(null=True, blank=True)
@@ -50,4 +64,4 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     products = models.ManyToManyField(Product, related_name="orders")
-    receipt = models.FileField(null=True, upload_to='orders/receipts')
+    receipt = models.FileField(null=True, upload_to="orders/receipts")
