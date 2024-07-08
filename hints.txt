@@ -1,0 +1,234 @@
+
+
+========================Docker============================
+.dockerignore
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+
+
+
+
+Dockerfile
+FROM python:3.12
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY mysite .
+
+
+
+docker build . -t app
+docker run it app bash
+
+
+docker-compose.yaml
+version: "4.31"
+
+services:
+  app:
+    build: 
+      dockerfile: ./Dockerfile
+    command:
+    - "python"
+    - "manage.py"
+    - "runserver"
+    - "0.0.0.0:8080"
+    ports:
+      - "8000:8080"
+
+
+docker compose build app  - создает контейнер
+
+docker compose up app   - запускает контейнера в терминале
+
+docker compose up --build app  - сначала создает контейнер и запускает
+
+docker compose up -d app   - запустить в фоновом режиме, будет работать без терминала
+
+==========================Django======================================
+
+python -m venv .venv
+
+1)  /c/users/warme/OneDrive/Desktop/Django/1IntroDjango/djangoproject
+2) python/pip -V check version
+3) pip install virtualenv
+
+The simplest answer. Just:
+
+pip uninstall virtualenv
+and then:
+
+pip install virtualenv
+4) virtualenv .  download all stuff here
+5) $ . ./Scripts/activate  -- to turn off deactivate
+
+6) mkdir djangoproject
+7) cd djangoproject
+
+create the app
+8) django-admin.py startproject mysite .
+
+run server
+9) $ python manage.py runserver
+
+http://127.0.0.1:8000/
+http://localhost:8000/
+
+to remove migration errors in console:
+$ python manage.py migrate
+
+
+
+Navigate to the project directory with cd command (the project path): cd path
+Create a Python virtual environment: python -m venv virtual (in the project it is already created, and all needed libraries are installed)
+Activates the virtual environment: source virtual/Scripts/activate
+
+
+
+10) Create app
+python manage.py startapp pages
+
+11) create urls.py in pages forlder
+чтобы создать новый апп типа условная единицы для каждого элемента. Создаем 10, пишем новые url. Добавляем
+в основную папку с urls.py в INSTALLED_APPS то что мы создали (сейчас pages)
+
+VIEW
+
+Для каждой веб старницы создаем view в вайле views.py
+1) Create a python function
+def home(request):
+	return render(request, "home.html", {})
+
+2) Создаем папку templates в pages и добавляем html файлы туда
+
+3) добавлем urls in pages:
+from django.contrib import admin
+from django.urls import path
+from . import views
+
+urlpatterns = [
+	path('', views.home, name='home'),
+	path('about/', views.about, name='about'),
+    
+]
+
+4)добавляем urls in urls in mysite:
+from django.contrib import admin
+from django.urls import path, include
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('pages.urls'))
+]
+
+
+
+5) add boostrap in base.html file. In body section:
+{% block content %}
+    {% endblock %}
+
+6) add extend to other html files
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'home'%}">Home<a/> | <a href="{% url 'about'%}">About</a>
+<br/><br/>
+
+HOME PAGE!
+{% endblock %}
+
+7) changing html title for pages with extend
+add to about page: {% block title %} About Gleb {% endblock %}
+add to base.html file: <title>{% block title %}Hello, world!{% endblock %}</title>
+
+just make some block in html page and reference it base.html noice!!
+
+SECRET_KEY = 'django-insecure-5i^4e73htnj^$%4s+2_x34o^x_ptf&&ftlu9bz!6iak0^yx-7u'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ['secret-temple-75644.herokuapp.com']
+
+
+git remote add origin git@github.com:Warmetallic/shop.git
+git branch -M main
+git push -u origin main
+
+
+git checkout -b technopriest - my branch
+git checkout main - switch to main
+
+
+=====================Heroku==============
+git 
+
+heroku --version
+
+1)  /c/users/warme/OneDrive/Desktop/Django/DjangoTeamProject/
+2) python/pip -V check version
+3) pip install virtualenv
+
+The simplest answer. Just:
+
+pip uninstall virtualenv
+and then:
+
+pip install virtualenv
+4) virtualenv .  download all stuff here
+5) $ . ./Scripts/activate  -- to turn off deactivate
+
+
+1) virtualenv venv
+2) python -m virtualenv venv
+$ source venv/Scripts/activate
+
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1hjV8IoxF/89958w6wd2NUtdeLwKfHaec
+NiIPHLY5Vaj5gIZIU53FKTNNIYqFMXB8uMxBujqGxKFt93Jf72fGbgkSrPm5jSGPGTzPE9QL8PN7egsJQvci9VuUloJW7B3vwZ/qWnqhxxQPmgPYdR
+aWJiSx4zHXdb31IWi0x21hxVN9TJkmagl8hiaazIJK8ACzSRtl2lZgDpSUWhopkwafuvVlqYYPg1Xfe+3wIfwR34iDJUUVmUuYV+3SYqEXxVegpCVZh
+ZHBlThVLBKXHh8kLnZnzBiJlTz6JyDiWqnfwrPndiwk4veWwwKGqX4Sf4N0hcDQ8RFHfYX+cfKQ2DgommXMAb+0YzVUYxNLt+omqMq8F2L5BzMxCXYfJ
+H5o6zFvKC3Gh3vwRw/P6fOUPMvuz+Jr0DwjOsQiLzOfxNocvbLqAjNt1MWInNmXckcGNXqoWIz2ZfpL+XckbCtlayeFL37weLeTK/gKGEcsoy12/cXTGPh
+qbHv0PU9QvofOHdM= warme@LAPTOP-L58S6OP6
+
+heroku run --app djangoteamproject python manage.py makemigrations
+heroku run --app stark-mesa-89039 python manage.py makemigrations
+heroku run --app djangoteamproject python manage.py runserver
+heroku run --app stark-mesa-89039 python manage.py createsuperuser
+
+heroku run --app gleb-kharlamov-portfolio python manage.py makemigrations
+
+
+heroku login
+heroku keys:add
+
+
+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

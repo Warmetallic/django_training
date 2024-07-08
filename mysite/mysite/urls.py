@@ -32,7 +32,6 @@ urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
     path("request/", include("requestdataapp.urls")),
-    path("views/", include("views.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/schema/swagger/",
@@ -56,3 +55,5 @@ if settings.DEBUG:
     urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 
     urlpatterns.extend(static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))
+
+    urlpatterns.append(path("__debug__/", include("debug_toolbar.urls")))

@@ -1,5 +1,6 @@
 from functools import wraps
 import random
+import typing
 
 test_list = [1, 2, 3, 4, 5, 6]
 
@@ -153,3 +154,15 @@ test4 = " ".join(test3)
 
 
 print((test4))
+
+
+def func(text: str, space: str, action: typing.Callable) -> None:
+    if not text:
+        return
+    print(space + action(text))
+    func(text[1:], space + " ", action)
+    print(space + action(text))
+
+
+func("*" * 11, "", lambda text: " ".join(i for i in text))
+    

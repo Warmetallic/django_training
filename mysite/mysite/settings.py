@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from django.conf.global_settings import MEDIA_URL
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as __
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +28,21 @@ SECRET_KEY = "django-insecure-jz+_7#-o$fh2@&ht5g2v+so43wyzj!p04=hkz17#)k$qgsn)4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "0.0.0.0",
+    "127.0.0.1",
+    "localhost",
+]
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+if DEBUG:
+    import socket
+
+    hostname, _, ips = socket.gethostbyaddr(socket.gethostname())
+    INTERNAL_IPS.append("10.0.2.2")
+    INTERNAL_IPS.extend([ip[: ip.rfind(".")] + ".1" for ip in ips])
 
 
 # Application definition
@@ -43,10 +57,10 @@ INSTALLED_APPS = [
     "django.contrib.admindocs",
     "shopapp.apps.ShopappConfig",
     "requestdataapp.apps.RequestdataappConfig",
+    "debug_toolbar",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
-    "views.apps.ViewsConfig",
     "myauth.apps.MyauthConfig",
     "myapiapp.apps.MyapiappConfig",
 ]
@@ -61,6 +75,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.contrib.admindocs.middleware.XViewMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     # 'requestdataapp.middlewares.setup_useragent_on_request_middleware',
     # 'requestdataapp.middlewares.CountRequestMiddleware',
 ]
@@ -130,8 +145,8 @@ USE_TZ = True
 LOCALE_PATHS = [BASE_DIR / "locale/"]
 
 LANGUAGES = [
-    ("ru", _("Russian")),
-    ("en", _("English")),
+    ("ru", __("Russian")),
+    ("en", __("English")),
 ]
 
 
@@ -154,6 +169,66 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = reverse_lazy("myauth:about-me")
 
 LOGIN_URL = reverse_lazy("myauth:login")
+
+LOGFILE_NAME = BASE_DIR / "log.txt"
+# LOGFILE_SIZE = 400
+LOGFILE_SIZE = 1 * 1024 * 1024
+LOGFILE_COUNT = 5
+
+# LOGGING
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "logfile": {
+            # "class": "logging.handlers.TimedRotatingFileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGFILE_NAME,
+            "maxBytes": LOGFILE_SIZE,
+            "backupCount": LOGFILE_COUNT,
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": [
+            "console",
+            "logfile",
+        ],
+        "level": "INFO",
+    },
+}
+
+
+# LOGGING = {
+#     "version": 1,
+#     "filters": {
+#         "require_debug_true": {
+#             "()": "django.utils.log.RequireDebugTrue",
+#         },
+#     },
+#     "handlers": {
+#         "console": {
+#             "level": "DEBUG",
+#             "filters": ["require_debug_true"],
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "loggers": {
+#         "django.db.backends": {
+#             "level": "DEBUG",
+#             "handlers": ["console"],
+#         },
+#     },
+# }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
